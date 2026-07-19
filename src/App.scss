@@ -123,8 +123,15 @@ button {
     display: flex;
     justify-content: space-between;
 
+    .header-left {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px;
+    }
+
     .details {
-      display: inline-flex;
+      display: flex;
       flex-direction: column;
 
       line-height: 225%;
@@ -322,7 +329,7 @@ button {
 
 .hidden {
   .hideable,
-  button:not(.button-hideGui) {
+  button:not(.button-hideGui):not(.download-btn):not(.weather-widget--btn) {
     transition-delay: 0s;
     opacity: 0;
     transform: translateX(16px);
@@ -332,5 +339,18 @@ button {
   .config > .buttons > .button-hideGui {
     // lol
     transform: translateY(calc(-134px + 100%));
+  }
+
+  // Weather widget dan download button tetap tampil saat hide mode
+  .weather-widget {
+    opacity: 1 !important;
+    transform: none !important;
+    pointer-events: auto !important;
+  }
+
+  .download-btn {
+    opacity: 1 !important;
+    transform: none !important;
+    pointer-events: auto !important;
   }
 }

@@ -78,7 +78,7 @@ export default function WeatherWidget() {
 
   if (status === "idle") {
     return (
-      <button className="weather-widget weather-widget--btn hideable" onClick={requestLocation}>
+      <button className="weather-widget weather-widget--btn" onClick={requestLocation}>
         🌤️ Enable weather
       </button>
     )
@@ -86,7 +86,7 @@ export default function WeatherWidget() {
 
   if (status === "requesting" || status === "loading") {
     return (
-      <div className="weather-widget weather-widget--loading hideable">
+      <div className="weather-widget weather-widget--loading">
         <span className="weather-spinner" /> Fetching weather…
       </div>
     )
@@ -94,7 +94,7 @@ export default function WeatherWidget() {
 
   if (status === "denied") {
     return (
-      <div className="weather-widget weather-widget--denied hideable">
+      <div className="weather-widget weather-widget--denied">
         📍 Location unavailable
       </div>
     )
@@ -102,14 +102,14 @@ export default function WeatherWidget() {
 
   if (status === "error" || !weatherInfo || !weather.data) {
     return (
-      <button className="weather-widget weather-widget--btn hideable" onClick={requestLocation}>
+      <button className="weather-widget weather-widget--btn" onClick={requestLocation}>
         ⚠️ Retry weather
       </button>
     )
   }
 
   return (
-    <div className="weather-widget weather-widget--loaded hideable" title={weatherInfo.label}>
+    <div className="weather-widget weather-widget--loaded" title={weatherInfo.label}>
       <span className="weather-emoji">{weatherInfo.emoji}</span>
       <span className="weather-temp">
         {weather.data.temperature}{weather.data.unit}

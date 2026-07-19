@@ -19,21 +19,22 @@ export default function DownloadButton({ data }: Props) {
     setState("loading")
 
     try {
-      const res = await fetch(imageUrl)
-      if (!res.ok) throw new Error("Fetch failed")
-
-      const blob = await res.blob()
+      // Gunakan chrome.downloads API — bekerja langsung tanpa CORS issue
       const ext = imageUrl.split(".").pop()?.split("?")[0] || "jpg"
       const filename = `${data.title.replace(/[^a-z0-9]/gi, "_").slice(0, 60)}.${ext}`
 
-      const objectUrl = URL.createObjectURL(blob)
-      const a = document.createElement("a")
-      a.href = objectUrl
-      a.download = filename
-      document.body.appendChild(a)
-      a.click()
-      document.body.removeChild(a)
-      URL.revokeObjectURL(objectUrl)
+      await new Promise<void>((resolve, reject) => {
+        chrome.downloads.download(
+          { url: imageUrl, filename },
+          (downloadId?: number) => {
+            if (chrome.runtime.lastError || downloadId === undefined) {
+              reject(chrome.runtime.lastError)
+            } else {
+              resolve()
+            }
+          }
+        )
+      })
 
       setState("done")
       setTimeout(() => setState("idle"), 2000)
