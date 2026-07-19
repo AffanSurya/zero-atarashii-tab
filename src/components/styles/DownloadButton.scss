@@ -1,0 +1,57 @@
+.download-btn {
+  position: relative;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  font-size: 0.8rem;
+  border-radius: 16px;
+  border: none;
+  cursor: pointer;
+  font-family: "Poppins", sans-serif;
+  font-weight: 500;
+  color: white;
+  background: rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(4px);
+  transition: background 150ms ease, transform 100ms ease, color 150ms ease;
+
+  svg {
+    flex-shrink: 0;
+  }
+
+  span {
+    white-space: nowrap;
+  }
+
+  &:hover:not([disabled]) {
+    background: rgba(255, 255, 255, 0.9);
+    color: #111;
+    transform: translateY(-1px);
+  }
+
+  &[disabled] {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+
+  &--loading {
+    animation: dl-pulse 1s ease infinite;
+    pointer-events: none;
+  }
+
+  &--done {
+    background: rgba(46, 229, 157, 0.7) !important;
+    color: white !important;
+  }
+
+  &--error {
+    background: rgba(255, 107, 107, 0.7) !important;
+    color: white !important;
+  }
+}
+
+@keyframes dl-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.55; }
+}

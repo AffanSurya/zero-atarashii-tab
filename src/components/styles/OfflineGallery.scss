@@ -1,0 +1,102 @@
+.offline-panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+.offline-header {
+  padding: 12px 16px 8px;
+  flex-shrink: 0;
+}
+
+.offline-usage {
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.55);
+
+  strong {
+    color: var(--primary);
+  }
+}
+
+.offline-usage-mb {
+  opacity: 0.7;
+}
+
+.offline-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  flex: 1;
+  padding: 2rem;
+  color: rgba(255, 255, 255, 0.35);
+  text-align: center;
+
+  svg {
+    opacity: 0.4;
+  }
+
+  p {
+    margin: 0;
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.4);
+  }
+}
+
+.offline-hint {
+  font-size: 0.75rem !important;
+  opacity: 0.7;
+
+  svg {
+    vertical-align: middle;
+    opacity: 1 !important;
+  }
+}
+
+.offline-card {
+  cursor: default !important;
+}
+
+// ── Sidebar badge ──
+.sidebar-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  border-radius: 9px;
+  background: var(--primary);
+  color: white;
+  font-size: 0.65rem;
+  font-weight: 700;
+  margin-left: 2px;
+}
+
+// ── Save offline button in card ──
+.card-offline-button {
+  &.active {
+    color: var(--primary) !important;
+    background: rgba(255, 255, 255, 0.15) !important;
+  }
+
+  &.saving {
+    opacity: 0.5;
+    cursor: wait;
+    animation: save-pulse 0.8s ease infinite;
+  }
+}
+
+@keyframes save-pulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+// ── Source toggles ──
+.source-toggles {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}

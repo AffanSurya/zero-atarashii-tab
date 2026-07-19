@@ -1,0 +1,80 @@
+.weather-widget {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  font-family: "Poppins", sans-serif;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.85);
+  padding: 5px 12px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  width: fit-content;
+  transition: all 150ms ease;
+
+  &--btn {
+    cursor: pointer;
+    border: none;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.25);
+      color: white;
+      transform: translateY(-1px);
+    }
+  }
+
+  &--loading {
+    opacity: 0.6;
+    font-style: italic;
+  }
+
+  &--denied {
+    opacity: 0.55;
+    font-size: 0.75rem;
+  }
+
+  &--loaded {
+    gap: 8px;
+  }
+}
+
+.weather-emoji {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.weather-temp {
+  font-weight: 600;
+  color: white;
+  font-size: 0.88rem;
+}
+
+.weather-location {
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.75rem;
+
+  &::before {
+    content: "·";
+    margin-right: 5px;
+    opacity: 0.5;
+  }
+}
+
+.weather-spinner {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: weather-spin 0.7s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes weather-spin {
+  to { transform: rotate(360deg); }
+}

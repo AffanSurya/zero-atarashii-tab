@@ -6,6 +6,8 @@ import Config from "./components/Config"
 import Menu from "./components/Menu"
 import Image from "./components/Image"
 import { TimeDate } from "./components/TimeDate"
+import WeatherWidget from "./components/WeatherWidget"
+import DownloadButton from "./components/DownloadButton"
 
 import pkg from "../package.json"
 
@@ -25,12 +27,25 @@ import {
 } from "./stores/HistoryStore"
 import { fetchPosts } from "./utils/fetchPosts"
 import MenuButton from "./components/MenuButton"
+import { getAllWallpapers } from "./utils/offlineGallery"
+import { OfflineGalleryStore, addToSavedUrls, updateStorageInfo } from "./stores/OfflineGalleryStore"
 
 function App() {
   const { loaded, showRollOverlay } = useSnapshot(AppStore)
   const config = useSnapshot(ConfigStore)
   const cache = useSnapshot(CacheStore)
   const { history, i } = useSnapshot(HistoryStore)
+  useSnapshot(OfflineGalleryStore) // subscribe agar re-render saat savedUrls berubah
+
+  // Inisialisasi offline gallery store dari IndexedDB
+  useEffect(() => {
+    getAllWallpapers().then((all) => {
+      const urls = all.map((w) => w.url)
+      urls.forEach((u) => addToSavedUrls(u))
+      const usedMB = all.reduce((s, w) => s + w.blob.size, 0) / 1024 / 1024
+      updateStorageInfo(Math.round(usedMB * 10) / 10, all.length)
+    })
+  }, [])
 
   // const [modalOpen, setModalOpen] = useState(false)
 
@@ -127,6 +142,7 @@ function App() {
           <header>
             <div className="header-left">
               <TimeDate />
+              <WeatherWidget />
 
               <div className="details hideable">
                 <p className="to-load to-delay-1">{data?.title}</p>
@@ -182,7 +198,10 @@ function App() {
               </p>
             </div>
 
-            <MenuButton />
+            <div className="footer-actions">
+              <DownloadButton data={data} />
+              <MenuButton />
+            </div>
             <Menu />
           </footer>
         </div>

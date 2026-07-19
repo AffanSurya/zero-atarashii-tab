@@ -8,6 +8,15 @@ export const PRIMARY_COLOR_PRESETS = [
   "#2ee59d",
 ] as const
 
+export const WALLPAPER_SOURCES = [
+  { id: "animewallpaper", label: "r/Animewallpaper", subreddit: "Animewallpaper" },
+  { id: "animeart",       label: "r/AnimeART",       subreddit: "AnimeART" },
+  { id: "moescape",       label: "r/Moescape",       subreddit: "Moescape" },
+  { id: "imaginarycolorscapes", label: "r/ImaginaryColorscapes", subreddit: "ImaginaryColorscapes" },
+] as const
+
+export type WallpaperSourceId = (typeof WALLPAPER_SOURCES)[number]["id"]
+
 export const CONFIG_STATE_PICKABLE_FIELDS_MAP = {
   sort: ["relevance", "hot", "top", "new"],
   t: ["hour", "day", "week", "month", "year", "all"],
@@ -32,6 +41,8 @@ export type ConfigState = {
   pinned: boolean
 
   isMenuVisible: boolean
+
+  sources: WallpaperSourceId[]
 
   theme: {
     primary: string
@@ -65,6 +76,8 @@ export const { store: ConfigStore } = await persist<ConfigState>(
     pinned: false,
 
     isMenuVisible: false,
+
+    sources: ["animewallpaper"],
 
     //   toggleNsfw: () => set({ nsfw: !get().nsfw }),
     //   toggleIncognito: () => set({ incognito: !get().incognito }),
