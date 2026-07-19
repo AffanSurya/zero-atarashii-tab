@@ -155,8 +155,8 @@ function App() {
             </div>
           </header>
 
-          <footer className="to-bottom hideable">
-            <div className="attr">
+          <footer className="to-bottom">
+            <div className="attr hideable">
               <p className="attr-from to-load to-delay-3">
                 {data === null ? (
                   <strong>
@@ -191,7 +191,7 @@ function App() {
               )}
             </div>
 
-            <div className="credits">
+            <div className="credits hideable">
               <p>
                 Created with <FaHeart /> •{" "}
                 <a href="https://github.com/cf12/atarashii-tab">v{pkg.version}</a>

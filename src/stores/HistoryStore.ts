@@ -73,12 +73,21 @@ export const createImageData = (
 
   if (title) parts.unshift(title)
 
+  let finalUrl = post.url
+  try {
+    const u = new URL(finalUrl)
+    if (u.hostname.includes("reddit.com") && u.pathname.includes("/media")) {
+      const inner = u.searchParams.get("url")
+      if (inner) finalUrl = inner
+    }
+  } catch {}
+
   return {
     title: parts.join(" • "),
     res: resolution || "",
-    url: post.url,
-    backgroundUrl: pickImageUrl(post, window.innerWidth, window.innerHeight),
-    thumbnailUrl: pickImageUrl(post, 192, 108),
+    url: finalUrl,
+    backgroundUrl: pickImageUrl({ ...post, url: finalUrl }, window.innerWidth, window.innerHeight),
+    thumbnailUrl: pickImageUrl({ ...post, url: finalUrl }, 192, 108),
     link: `https://redd.it/${post.id}`,
     nums: [index, total],
   }
