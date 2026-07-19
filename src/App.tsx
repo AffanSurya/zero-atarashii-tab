@@ -67,7 +67,7 @@ function App() {
         cache.lastUpdated === -1 ||
         Date.now() - cache.lastUpdated >= 1000 * 60 * 60 * 24
       ) {
-        console.log("[i] Fetching w/ config:", config)
+        if (import.meta.env.DEV) console.log("[i] Fetching w/ config:", config)
         posts = await fetchPosts(config)
 
         if (!ignore) {
@@ -75,7 +75,7 @@ function App() {
           CacheStore.data = posts
         }
       } else {
-        console.log("[i] Using cached posts")
+        if (import.meta.env.DEV) console.log("[i] Using cached posts")
         posts = cache.data as RedditPost[]
       }
 
@@ -87,7 +87,7 @@ function App() {
       const num = Math.floor(Math.random() * posts.length)
       const post = posts[num]
 
-      console.log("[i] Loading post:", post)
+        if (import.meta.env.DEV) console.log("[i] Loading post:", post)
 
       pushPostToHistory(post, num, posts.length)
       setLoaded(LoadState.LOADING)

@@ -10,22 +10,25 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
 
       - name: Install dependencies
-        uses: bahmutov/npm-install@v1
+        uses: bahmutov/npm-install@9b79705cb0d9b5143aaa8ece984a1e3e3e1f1d08 # v1
 
       - name: Build extension
         run: npm run build
+
+      - name: Copy LICENSE to dist
+        run: cp LICENSE dist/LICENSE
 
       - name: Zip release artifact
         run: cd dist && zip -r ../atarashii-new-tab.zip .
 
       - name: Create Release
-        uses: ncipollo/release-action@v1
+        uses: ncipollo/release-action@cdcc88a9acf4b825d3c9204e659e3ac3b6f862b3 # v1
         with:
           artifacts: atarashii-new-tab.zip
           immutableCreate: true
