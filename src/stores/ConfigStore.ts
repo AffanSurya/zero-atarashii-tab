@@ -18,9 +18,10 @@ export const WALLPAPER_SOURCES = [
 export type WallpaperSourceId = (typeof WALLPAPER_SOURCES)[number]["id"]
 
 export const CONFIG_STATE_PICKABLE_FIELDS_MAP = {
+  orientation: ["all", "desktop", "mobile"],
   sort: ["relevance", "hot", "top", "new"],
   t: ["hour", "day", "week", "month", "year", "all"],
-}
+} as const
 
 export const CONFIG_STATE_TOGGLEABLE_FIELDS = [
   "nsfw",
@@ -32,6 +33,7 @@ export const CONFIG_STATE_TOGGLEABLE_FIELDS = [
 export type ConfigState = {
   num?: number
   q: string
+  orientation: (typeof CONFIG_STATE_PICKABLE_FIELDS_MAP.orientation)[number]
   sort: (typeof CONFIG_STATE_PICKABLE_FIELDS_MAP.sort)[number]
   t: (typeof CONFIG_STATE_PICKABLE_FIELDS_MAP.t)[number]
 
@@ -67,6 +69,7 @@ export const { store: ConfigStore } = await persist<ConfigState>(
   {
     num: undefined,
     q: `flair:"Desktop"`,
+    orientation: "all",
     sort: "top",
     t: "year",
 
@@ -78,14 +81,6 @@ export const { store: ConfigStore } = await persist<ConfigState>(
     isMenuVisible: false,
 
     sources: ["animewallpaper"],
-
-    //   toggleNsfw: () => set({ nsfw: !get().nsfw }),
-    //   toggleIncognito: () => set({ incognito: !get().incognito }),
-    //   toggleHideGui: () => set({ hideGui: !get().hideGui }),
-    //   togglePinned: (v) => set({ pinned: v ?? !get().pinned }),
-
-    // set: (data) => set(data),
-    // toggle: (key) => set({ [key]: !get()[key] }),
 
     theme: {
       primary: PRIMARY_COLOR_PRESETS[0],
@@ -103,11 +98,6 @@ export const { store: ConfigStore } = await persist<ConfigState>(
 export const toggle = (key: keyof ConfigStateToggleableFields) => {
   ConfigStore[key] = !ConfigStore[key]
 }
-
-// export const togglePin = () => {
-//   ConfigStore.num = ConfigStore.num ? undefined : ConfigStore.num
-//   ConfigStore.pinned = !ConfigStore.pinned
-// }
 
 export const toggleNsfw = () => {
   ConfigStore.nsfw = !ConfigStore.nsfw

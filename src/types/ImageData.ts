@@ -9,4 +9,5 @@ export type ImageData = {
   thumbnailUrl?: string
 
   favorite?: boolean
+  isPortrait?: boolean
 }

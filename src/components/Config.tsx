@@ -9,7 +9,7 @@ import {
 } from "react-icons/fa"
 
 import { useSnapshot } from "valtio"
-import { clearCache } from "../stores/CacheStore"
+import { clearCache, CacheStore } from "../stores/CacheStore"
 import {
   CONFIG_STATE_PICKABLE_FIELDS_MAP,
   ConfigStore,
@@ -87,6 +87,9 @@ function Config() {
   const rollOverlayTimeout = useRef<number | null>(null)
 
   const reroll = useCallback(() => {
+    if (config.pinned) {
+      ConfigStore.pinned = false
+    }
     if (config.settings.soundEffects) playRollSound()
     setIsRolling(false)
     setShowRollOverlay(false)
@@ -102,8 +105,13 @@ function Config() {
       )
     }
 
+    // Jika cache kosong atau hanya 1 gambar, clear cache agar fetch data segar
+    if (CacheStore.data.length <= 1) {
+      clearCache()
+    }
+
     setLoaded(LoadState.FETCH_NEW)
-  }, [config.settings.rerollFlash, config.settings.soundEffects])
+  }, [config.pinned, config.settings.rerollFlash, config.settings.soundEffects])
 
   useEffect(() => {
     if (!isRolling) return
@@ -140,7 +148,7 @@ function Config() {
         icon: FaSync,
         action: reroll,
         isActive: isRolling,
-        isDisabled: config.incognito || config.pinned,
+        isDisabled: config.incognito,
         keyBinding: "KeyR",
       },
       {
@@ -185,6 +193,7 @@ function Config() {
 
   return (
     <div className="config">
+      <ValuePicker valueKey="orientation" />
       <ValuePicker valueKey="sort" />
       {config.sort !== "new" && <ValuePicker valueKey="t" />}
 

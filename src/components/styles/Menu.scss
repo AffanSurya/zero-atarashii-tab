@@ -392,6 +392,30 @@
     }
   }
 
+  .orientation-picker {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+
+    button {
+      border-radius: 10px;
+      padding: 8px 14px;
+      background-color: rgba(white, 0.1);
+      color: rgba(white, 0.85);
+
+      &:hover {
+        background-color: rgba(white, 0.2);
+        color: white;
+      }
+
+      &.active {
+        background-color: var(--primary);
+        color: black;
+        font-weight: 600;
+      }
+    }
+  }
+
   .dim-opacity-slider {
     width: 100%;
     accent-color: var(--primary);

@@ -77,17 +77,24 @@ function App() {
     async function run() {
       let posts: RedditPost[] = []
 
-      // Cache for 24 hours
-      if (
+      // Cache for 24 hours (hanya gunakan cache jika memang ada isinya)
+      const shouldFetch =
         cache.lastUpdated === -1 ||
+        !cache.data?.length ||
         Date.now() - cache.lastUpdated >= 1000 * 60 * 60 * 24
-      ) {
+
+      if (shouldFetch) {
         if (import.meta.env.DEV) console.log("[i] Fetching w/ config:", config)
         posts = await fetchPosts(config)
 
         if (!ignore) {
-          CacheStore.lastUpdated = Date.now()
-          CacheStore.data = posts
+          if (posts.length > 0) {
+            CacheStore.lastUpdated = Date.now()
+            CacheStore.data = posts
+          } else if (cache.data?.length) {
+            // Gunakan data cache lama jika fetch gagal
+            posts = cache.data as RedditPost[]
+          }
         }
       } else {
         if (import.meta.env.DEV) console.log("[i] Using cached posts")
@@ -95,16 +102,28 @@ function App() {
       }
 
       if (!posts.length || ignore) {
-        if (!ignore) setLoaded(LoadState.LOADED)
+        if (!ignore) {
+          // Jika fetch kosong namun history memiliki wallpaper lain, cycle agar tidak stuck di 1 gambar
+          if (history.length > 1) {
+            const nextIndex = (i + 1) % history.length
+            HistoryStore.i = nextIndex
+          }
+          setLoaded(LoadState.LOADED)
+        }
         return
       }
 
-      const num = Math.floor(Math.random() * posts.length)
-      const post = posts[num]
+      // Hindari memilih kembali wallpaper yang sedang aktif jika ada pilihan lain
+      const currentUrl = history[i]?.url
+      const candidates = posts.filter((p) => p.url !== currentUrl)
+      const list = candidates.length > 0 ? candidates : posts
+      const num = Math.floor(Math.random() * list.length)
+      const post = list[num]
+      const originalIndex = posts.indexOf(post)
 
-        if (import.meta.env.DEV) console.log("[i] Loading post:", post)
+      if (import.meta.env.DEV) console.log("[i] Loading post:", post)
 
-      pushPostToHistory(post, num, posts.length)
+      pushPostToHistory(post, originalIndex >= 0 ? originalIndex : num, posts.length)
       setLoaded(LoadState.LOADING)
     }
 
@@ -210,6 +229,7 @@ function App() {
           <Image
             className="bg to-load-bg"
             src={data?.backgroundUrl || data?.url}
+            isPortrait={data?.isPortrait}
             alt=""
             onLoad={() => {
               setLoaded(LoadState.LOADED)

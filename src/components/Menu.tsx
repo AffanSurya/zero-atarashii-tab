@@ -425,11 +425,10 @@ export default function Menu() {
                     onLoad={() => {
                       const objUrl = URL.createObjectURL(w.blob)
                       // Set gambar sebagai background langsung dari blob
-                      const img = document.querySelector<HTMLImageElement>(".bg")
-                      if (img) {
-                        img.src = objUrl
-                        img.classList.add("load")
-                      }
+                      const imgs = document.querySelectorAll<HTMLImageElement>(".bg-main, .bg-backdrop, img.bg");
+                      imgs.forEach((img) => { img.src = objUrl; });
+                      const frame = document.querySelector(".app-frame");
+                      if (frame) frame.classList.add("load");
                     }}
                     onDelete={() => handleDeleteOffline(w.url)}
                   />
@@ -442,6 +441,33 @@ export default function Menu() {
         {/* ── SETTINGS TAB ── */}
         {activeTab === "settings" && (
           <div className="settings-panel" aria-label="Settings">
+            {/* Wallpaper Orientation */}
+            <section className="settings-section">
+              <div className="settings-header">
+                <h2>Wallpaper Orientation</h2>
+                <p>Choose between all wallpapers, desktop landscape, or mobile portrait.</p>
+              </div>
+              <div className="orientation-picker">
+                {(["all", "desktop", "mobile"] as const).map((mode) => {
+                  const isActive = config.orientation === mode
+                  return (
+                    <button
+                      key={mode}
+                      type="button"
+                      className={isActive ? "active" : ""}
+                      onClick={() => {
+                        ConfigStore.orientation = mode
+                        clearCache()
+                        setLoaded(LoadState.FETCH_NEW)
+                      }}
+                    >
+                      {mode === "all" ? "All" : mode === "desktop" ? "Desktop (Landscape)" : "Mobile (Portrait)"}
+                    </button>
+                  )
+                })}
+              </div>
+            </section>
+
             {/* Wallpaper Sources */}
             <section className="settings-section">
               <div className="settings-header">

@@ -2,12 +2,28 @@ import React, { useEffect, useRef, useState } from "react"
 import NProgress from "nprogress"
 import { getWallpaper } from "../utils/offlineGallery"
 
-type ImageProps = React.ImgHTMLAttributes<HTMLImageElement>
+type ImageProps = React.ImgHTMLAttributes<HTMLImageElement> & {
+  isPortrait?: boolean
+}
 
-function Image({ src, onLoad, onError, ...props }: ImageProps) {
+function Image({
+  src,
+  isPortrait: propIsPortrait,
+  onLoad,
+  onError,
+  className,
+  ...props
+}: ImageProps) {
   const [loadedSrc, setLoadedSrc] = useState(src)
   const currentSrc = useRef<string | undefined>(undefined)
   const blobUrl = useRef<string | null>(null)
+  const [isPortrait, setIsPortrait] = useState<boolean>(Boolean(propIsPortrait))
+
+  useEffect(() => {
+    if (propIsPortrait !== undefined) {
+      setIsPortrait(propIsPortrait)
+    }
+  }, [propIsPortrait])
 
   useEffect(() => {
     if (!src) return
@@ -47,18 +63,40 @@ function Image({ src, onLoad, onError, ...props }: ImageProps) {
     onError?.(event)
   }
 
+  const handleLoad = (event: React.SyntheticEvent<HTMLImageElement>) => {
+    const img = event.currentTarget
+    if (img.naturalWidth && img.naturalHeight) {
+      const portrait = img.naturalWidth / img.naturalHeight < 1.15
+      setIsPortrait(portrait)
+    }
+    NProgress.done()
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => onLoad?.(event))
+    })
+  }
+
   return (
-    <img
-      src={loadedSrc}
-      onLoad={(event) => {
-        NProgress.done()
-        requestAnimationFrame(() => {
-          requestAnimationFrame(() => onLoad?.(event))
-        })
-      }}
-      onError={handleError}
-      {...props}
-    />
+    <div
+      className={`bg-container ${className || ""} ${
+        isPortrait ? "is-portrait" : "is-landscape"
+      }`}
+    >
+      {isPortrait && (
+        <img
+          src={loadedSrc}
+          className="bg-backdrop"
+          aria-hidden="true"
+          alt=""
+        />
+      )}
+      <img
+        src={loadedSrc}
+        className={`bg-main ${isPortrait ? "portrait" : "landscape"}`}
+        onLoad={handleLoad}
+        onError={handleError}
+        {...props}
+      />
+    </div>
   )
 }
 

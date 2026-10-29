@@ -13,9 +13,9 @@
     "128": "icons/icon-128.png"
   },
   "host_permissions": [
-    "https://i.redd.it/",
-    "https://www.reddit.com/r/*/search.json*",
+    "https://*.reddit.com/*",
+    "https://*.redd.it/*",
     "https://api.open-meteo.com/*",
     "https://geocoding-api.open-meteo.com/*"
   ]
-}
+}

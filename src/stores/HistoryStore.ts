@@ -12,6 +12,7 @@ export type RedditPost = {
   id: string
   title: string
   url: string
+  link_flair_text?: string
   preview?: {
     images?: Array<{
       source?: RedditPreviewImage
@@ -82,6 +83,21 @@ export const createImageData = (
     }
   } catch {}
 
+  const source = post.preview?.images?.[0]?.source
+  let isPortrait = false
+  if (source?.width && source?.height) {
+    isPortrait = source.width / source.height < 1.15
+  } else if (post.link_flair_text?.toLowerCase().includes("mobile")) {
+    isPortrait = true
+  } else if (resolution) {
+    const resParts = resolution.split(" × ")
+    if (resParts.length === 2) {
+      const w = parseInt(resParts[0], 10)
+      const h = parseInt(resParts[1], 10)
+      if (w && h) isPortrait = w / h < 1.15
+    }
+  }
+
   return {
     title: parts.join(" • "),
     res: resolution || "",
@@ -90,6 +106,7 @@ export const createImageData = (
     thumbnailUrl: pickImageUrl({ ...post, url: finalUrl }, 192, 108),
     link: `https://redd.it/${post.id}`,
     nums: [index, total],
+    isPortrait,
   }
 }
 
